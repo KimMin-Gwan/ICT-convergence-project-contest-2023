@@ -1,0 +1,51 @@
+'''
+제작자 : 박세빈
+제작일자 : 2023.03.13 ~ 2023.03.14 
+기능 : 소켓통신을 사용한 영상전송 구현 (서버)
+'''
+
+import cv2
+import socket
+import struct
+import pickle
+
+data_buffer = b''
+data_size = struct.calcsize('L')
+
+
+s_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s_address = ('',5000)
+s_socket.bind(s_address)
+s_socket.listen(1)
+client, c_address = s_socket.accept()
+
+print('connected by', c_address)
+
+while True:
+    while len(data_buffer) < data_size:
+        data_buffer += client.recv(4096)
+
+    packed_data_size = data_buffer[:data_size]
+    data_buffer = data_buffer[data_size:]
+
+    frame_size = struct.unpack(">L", packed_data_size)[0]
+
+    while len(data_buffer) < frame_size:
+        data_buffer += client.recv(4096)
+
+    frame_data = data_buffer[:frame_size]
+    data_buffer = data_buffer[frame_size:]
+
+    frame = pickle.loads(frame_data)
+    frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
+
+    cv2.imshow('frame', frame)
+
+    key = cv2.waitKey(1) & 0xff
+    if key == ord("q"):
+        break
+
+client.close()
+s_socket.close()
+
+cv2.destroyAllWindows()
