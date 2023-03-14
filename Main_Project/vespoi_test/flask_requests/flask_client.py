@@ -22,7 +22,7 @@ while True:
     _, img_encoded = cv2.imencode('.jpg', frame)
 
     # HTTPS POST 요청 전송
-    response = requests.post('https://633c-125-185-34-18.jp.ngrok.io', files={'file': ('image.jpg', img_encoded.tostring(), 'image/jpeg')}, verify=False)
+    response = requests.post('https://d8e5-125-185-34-18.jp.ngrok.io/', files={'file': ('image.jpg', img_encoded.tostring(), 'image/jpeg')}, verify=False)
     print(response.content)
 
     # 'q' 키를 눌러서 종료
