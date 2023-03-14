@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-
 import posenet.constants
 
 
@@ -33,9 +32,11 @@ def _process_input(source_img, scale_factor=1.0, output_stride=16):
 
 def read_cap(cap, scale_factor=1.0, output_stride=16):
     res, img = cap.read()
+    
     if not res:
-        raise IOError("webcam failure")
+      raise IOError("webcam failure")
 
+    #return _process_input(cap, scale_factor, output_stride)
     return _process_input(img, scale_factor, output_stride)
 
 
@@ -93,16 +94,21 @@ def draw_skel_and_kp(
         img, instance_scores, keypoint_scores, keypoint_coords,
         min_pose_score=0.5, min_part_score=0.5):
     out_img = img
+    font=cv2.FONT_HERSHEY_SIMPLEX
     adjacent_keypoints = []
     cv_keypoints = []
+
+    part_flag = []
+
     component = []
-
     coord = []
-
 
     for ii, score in enumerate(instance_scores):
         if score < min_pose_score:
+            #part_flag[ii] = 0
             continue
+
+        print('index : ', ii)
 
         new_keypoints = get_adjacent_keypoints(
             keypoint_scores[ii, :], keypoint_coords[ii, :, :], min_part_score
@@ -111,6 +117,7 @@ def draw_skel_and_kp(
 
 
         for ks, kc in zip(keypoint_scores[ii, :], keypoint_coords[ii, :, :]):
+
             if ks < min_part_score:
                 continue
 
@@ -118,16 +125,31 @@ def draw_skel_and_kp(
             y = kc[0].astype(np.int32)
             component.append(x)
             component.append(y)
-            
+
             #coord_x = np.append(kc[1].astype(np.int32))
             #coord_y = np.append(kc[0].astype(np.int32))
             cv_keypoints.append(cv2.KeyPoint(kc[1], kc[0], 10. * ks))
-
+        part_flag.append(component)
         coord.extend(component)
+
+    print('part_flag : ', part_flag)
+    
+
+    # temp = []
+    # for pi in range(len(cv_keypoints)):
+    #     if cv_keypoints[pi] == 0.:
+    #         break
+    #     print('Pose #%d, score = %f' % (pi, component[pi]))
+    #     for ki, (s, c) in enumerate(zip(keypoint_scores[pi, :], keypoint_coords[pi, :, :])):
+    #         print('Keypoint %s, score = %f, coord = %s' % (posenet.PART_NAMES[ki], s, c))
+    #         temp = [int(x) for x in c]
+    #         #print('temp : ' , temp)
+    #         out_img = cv2.putText(out_img, posenet.PART_NAMES[ki], temp, font, 1, (255,0,0), 1)
+    #         temp.clear()
+
 
     #print(coord)
     temp = []
-    font=cv2.FONT_HERSHEY_SIMPLEX
     i = 0
 
     while(True):
@@ -136,7 +158,6 @@ def draw_skel_and_kp(
 
         temp.append(coord[i])
         temp.append(coord[i+1])
-        #print(temp)
         text = '({}, {})'.format(temp[0], temp[1])
         out_img = cv2.putText(out_img, text, temp, font, 1, (255,0,0), 1)
         temp.clear()
