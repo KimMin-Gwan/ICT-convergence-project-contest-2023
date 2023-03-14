@@ -11,5 +11,5 @@ def upload_file():
     return 'File uploaded successfully'
 
 if __name__ == '__main__':
-    context = ('cert.pem', 'key.pem')
-    app.run(debug=True, ssl_context=context)
+    #context = ('cert.pem', 'key.pem')
+    app.run(debug=True)
