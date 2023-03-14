@@ -99,7 +99,6 @@ def build_part_with_score_fast(score_threshold, local_max_radius, scores):
                 keypoint_id,
                 np.array((y, x))
             ))
-    #print(parts)
 
     return parts
 
@@ -117,27 +116,35 @@ def decode_multiple_poses(
 
     scored_parts = build_part_with_score_fast(score_threshold, LOCAL_MAXIMUM_RADIUS, scores)
     scored_parts = sorted(scored_parts, key=lambda x: x[0], reverse=True)
+    print('parts : \n', scored_parts)
     # change dimensions from (h, w, x) to (h, w, x//2, 2) to allow return of complete coord array
     height = scores.shape[0]
     width = scores.shape[1]
     offsets = offsets.reshape(height, width, 2, -1).swapaxes(2, 3)
     displacements_fwd = displacements_fwd.reshape(height, width, 2, -1).swapaxes(2, 3)
     displacements_bwd = displacements_bwd.reshape(height, width, 2, -1).swapaxes(2, 3)
-    print('init offsets : ', offsets)
+    #print('init offsets : ', offsets)
+    
     for root_score, root_id, root_coord in scored_parts:
+        print('root_score : ', root_score)
+        print('root_id : ', root_id)
+        print('root_coord : ', root_coord)
 
         root_image_coords = root_coord * output_stride + offsets[
             root_coord[0], root_coord[1], root_id]
       
-        print('decode_multi_root_coord[0]: ', root_coord[0])
-        print('decode_multi_root_coord[1]: ', root_coord[1])
-        print('decode_multi_root_id : ',  root_id)
-        print('decode_multi_offsets : ', offsets[root_coord[0], root_coord[1], root_id])
+        #print('decode_multi_root_coord[0]: ', root_coord[0])
+        #print('decode_multi_root_coord[1]: ', root_coord[1])
+        #print('decode_multi_root_id : ',  root_id)
+        #print('decode_multi_offsets : ', offsets[root_coord[0], root_coord[1], root_id])
+        print('root_image_coords : ', root_image_coords)
 
 
         if within_nms_radius_fast(
                 pose_keypoint_coords[:pose_count, root_id, :], squared_nms_radius, root_image_coords):
             continue
+       
+        print('root_image_coords but next part of if : ', root_image_coords)
 
         keypoint_scores, keypoint_coords = decode_pose(
             root_score, root_id, root_image_coords,

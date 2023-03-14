@@ -9,7 +9,7 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # 카메라 연결
-cap = cv2.VideoCapture('test.mp4')
+cap = cv2.VideoCapture(0)
 
 while True:
     # 카메라에서 프레임 읽기
