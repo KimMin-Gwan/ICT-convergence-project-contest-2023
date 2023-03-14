@@ -137,14 +137,14 @@ def decode_multiple_poses(
         #print('decode_multi_root_coord[1]: ', root_coord[1])
         #print('decode_multi_root_id : ',  root_id)
         #print('decode_multi_offsets : ', offsets[root_coord[0], root_coord[1], root_id])
-        print('root_image_coords : ', root_image_coords)
+        #print('root_image_coords : ', root_image_coords)
 
 
         if within_nms_radius_fast(
                 pose_keypoint_coords[:pose_count, root_id, :], squared_nms_radius, root_image_coords):
             continue
        
-        print('root_image_coords but next part of if : ', root_image_coords)
+        #print('root_image_coords but next part of if : ', root_image_coords)
 
         keypoint_scores, keypoint_coords = decode_pose(
             root_score, root_id, root_image_coords,
