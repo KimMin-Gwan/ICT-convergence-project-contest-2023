@@ -68,16 +68,8 @@ def decode_pose(
                 edge,instance_keypoint_coords[source_keypoint_id],
                 target_keypoint_id,
                 scores, offsets, output_stride, displacements_bwd)
-<<<<<<< Updated upstream
-            
-            print('score : ', score)
-            print('coords : ', coords)
-            print('target_keypoint_id : ', target_keypoint_id)
-            print('source_keypoint_id : ', source_keypoint_id)
-=======
 
             # 추출한 도착점의 좌표값과 신뢰도 값을 배열에 저장
->>>>>>> Stashed changes
             instance_keypoint_scores[target_keypoint_id] = score
             instance_keypoint_coords[target_keypoint_id] = coords
 
