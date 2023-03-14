@@ -4,6 +4,10 @@ import cv2
 import numpy as np
 import requests
 
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 # 카메라 연결
 cap = cv2.VideoCapture('test.mp4')
 
@@ -18,7 +22,7 @@ while True:
     _, img_encoded = cv2.imencode('.jpg', frame)
 
     # HTTPS POST 요청 전송
-    response = requests.post('https://localhost:5000/', files={'file': ('image.jpg', img_encoded.tostring(), 'image/jpeg')}, verify=False)
+    response = requests.post('https://633c-125-185-34-18.jp.ngrok.io', files={'file': ('image.jpg', img_encoded.tostring(), 'image/jpeg')}, verify=False)
     print(response.content)
 
     # 'q' 키를 눌러서 종료
