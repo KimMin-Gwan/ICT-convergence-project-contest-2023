@@ -89,6 +89,63 @@ def draw_skeleton(
     out_img = cv2.polylines(out_img, adjacent_keypoints, isClosed=False, color=(255, 255, 0))
     return out_img
 
+# 부위를 화면에 표시해주는 함수
+def draw_part_name(
+        img, instance_scores, keypoint_scores, keypoint_coords,
+        min_pose_score = 0.5, min_part_score=0.5):
+    out_img = img
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    real_co = []
+    leftWrist = 0
+    rightWrist = 0
+    nose = 0
+    
+    for ii, score in enumerate(instance_scores):
+
+
+        # score가 뭘 하는지 모르겠지만 아래 함수에서 써서 같이 써줌
+        if score < min_pose_score:
+            continue
+        
+        # instance_scores의 길이는 포즈 갯수와 같음
+        for ki in range(len(instance_scores)):
+            if instance_scores[ki] == 0.:
+                break
+            
+            # x와 y가 뒤집혀 있어서 뒤집어서 real_co 배열에 넣어줌
+            for kc, (s, c) in enumerate(zip(keypoint_scores[ki, :], keypoint_coords[ki, :, :])):
+                name = posenet.PART_NAMES[kc]
+                x = c[1].astype(np.int32)
+                real_co.append(x)
+                y = c[0].astype(np.int32)
+                real_co.append(y)
+
+                # 파트가 실제로 화면에 찍혔을때
+                if s > min_part_score :
+                    # 화면에 출력
+                    cv2.putText(out_img, name, real_co, font, 1, (0, 0, 0), 1 ) 
+                    # 화면에 잡힌 손과 코의 y좌표를 저장
+                    if name == posenet.PART_NAMES[0]:
+                        nose = y
+                    elif name == posenet.PART_NAMES[9]:
+                        leftWrist = y
+                    elif name == posenet.PART_NAMES[10]:
+                        rightWrist = y
+                # 배열 비우기
+                real_co.clear()
+    # 만약 왼손과 오른손이 화면에 잡히고
+    if leftWrist and rightWrist != 0:
+        # 두 손중 하나가 코 위에 있다면 아래의 코드를 실행한다.
+        if leftWrist < nose or rightWrist < nose :
+            print('hand is higher than nose now')
+
+    return out_img
+
+
+
+
+
+
 
 def draw_skel_and_kp(
         img, instance_scores, keypoint_scores, keypoint_coords,
@@ -108,7 +165,6 @@ def draw_skel_and_kp(
             #part_flag[ii] = 0
             continue
 
-        print('index : ', ii)
 
         new_keypoints = get_adjacent_keypoints(
             keypoint_scores[ii, :], keypoint_coords[ii, :, :], min_part_score
@@ -129,23 +185,10 @@ def draw_skel_and_kp(
             #coord_x = np.append(kc[1].astype(np.int32))
             #coord_y = np.append(kc[0].astype(np.int32))
             cv_keypoints.append(cv2.KeyPoint(kc[1], kc[0], 10. * ks))
-        part_flag.append(component)
+
         coord.extend(component)
 
-    print('part_flag : ', part_flag)
     
-
-    # temp = []
-    # for pi in range(len(cv_keypoints)):
-    #     if cv_keypoints[pi] == 0.:
-    #         break
-    #     print('Pose #%d, score = %f' % (pi, component[pi]))
-    #     for ki, (s, c) in enumerate(zip(keypoint_scores[pi, :], keypoint_coords[pi, :, :])):
-    #         print('Keypoint %s, score = %f, coord = %s' % (posenet.PART_NAMES[ki], s, c))
-    #         temp = [int(x) for x in c]
-    #         #print('temp : ' , temp)
-    #         out_img = cv2.putText(out_img, posenet.PART_NAMES[ki], temp, font, 1, (255,0,0), 1)
-    #         temp.clear()
 
 
     #print(coord)
@@ -158,10 +201,13 @@ def draw_skel_and_kp(
 
         temp.append(coord[i])
         temp.append(coord[i+1])
+
+
         text = '({}, {})'.format(temp[0], temp[1])
         out_img = cv2.putText(out_img, text, temp, font, 1, (255,0,0), 1)
         temp.clear()
         i += 2
+
         if i >= len(coord):
             break
         
