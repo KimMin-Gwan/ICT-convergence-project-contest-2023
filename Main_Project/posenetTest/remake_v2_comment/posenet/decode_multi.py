@@ -116,7 +116,7 @@ def decode_multiple_poses(
 
     scored_parts = build_part_with_score_fast(score_threshold, LOCAL_MAXIMUM_RADIUS, scores)
     scored_parts = sorted(scored_parts, key=lambda x: x[0], reverse=True)
-    print('parts : \n', scored_parts)
+    #print('parts : \n', scored_parts)
     # change dimensions from (h, w, x) to (h, w, x//2, 2) to allow return of complete coord array
     height = scores.shape[0]
     width = scores.shape[1]
@@ -126,9 +126,9 @@ def decode_multiple_poses(
     #print('init offsets : ', offsets)
     
     for root_score, root_id, root_coord in scored_parts:
-        print('root_score : ', root_score)
-        print('root_id : ', root_id)
-        print('root_coord : ', root_coord)
+        #print('root_score : ', root_score)
+        #print('root_id : ', root_id)
+        #print('root_coord : ', root_coord)
 
         root_image_coords = root_coord * output_stride + offsets[
             root_coord[0], root_coord[1], root_id]
