@@ -59,6 +59,8 @@ def main():
 
                     cv2.imwrite(os.path.join(args.output_dir, os.path.relpath(f, args.image_dir)), draw_image)
 
+                print('pose_scores : ', pose_scores)
+
                 if not args.notxt:
                     print()
                     print("Results for image: %s" % f)
