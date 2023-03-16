@@ -116,9 +116,6 @@ def main():
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
-
-
-
         print('Average FPS: ', frame_count / (time.time() - start))
 
 if __name__ == "__main__":

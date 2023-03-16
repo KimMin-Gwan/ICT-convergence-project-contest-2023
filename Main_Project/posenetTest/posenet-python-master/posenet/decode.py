@@ -40,7 +40,6 @@ def decode_pose(
         displacements_fwd,
         displacements_bwd
 ):
-    print('decod_pose function')
     num_parts = scores.shape[2]
     num_edges = len(PARENT_CHILD_TUPLES)
 
@@ -50,9 +49,6 @@ def decode_pose(
     instance_keypoint_coords = np.zeros((num_parts, 2))
     instance_keypoint_scores[root_id] = root_score
     instance_keypoint_coords[root_id] = root_image_coord
-    print('root score : ', root_score)
-    print('root coords : ', root_image_coord)
-    print('root id : ', root_id)
 
 
     # 이미지에서 키포인트 간의 관계를 연결하는 작업을 수행(역순으로 반복)
@@ -76,12 +72,15 @@ def decode_pose(
     # 동작 방식은 위의 for문과 동일하나 순서대로 반복한다는 것이 차이점 (역순 X)
     for edge in range(num_edges):
         source_keypoint_id, target_keypoint_id = PARENT_CHILD_TUPLES[edge]
+
         if (instance_keypoint_scores[source_keypoint_id] > 0.0 and
                 instance_keypoint_scores[target_keypoint_id] == 0.0):
+
             score, coords = traverse_to_targ_keypoint(
                 edge,instance_keypoint_coords[source_keypoint_id],
                 target_keypoint_id,
                 scores, offsets, output_stride, displacements_fwd)
+
             instance_keypoint_scores[target_keypoint_id] = score
             instance_keypoint_coords[target_keypoint_id] = coords
 
