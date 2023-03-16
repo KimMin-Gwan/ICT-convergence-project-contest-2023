@@ -4,15 +4,17 @@ import socket
 import numpy as np
  
 ## TCP 사용
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ## server ip, port
 #ip = socket.gethostbyname('bd4a-125-185-34-18.jp.ngrok.io') #이건 http라서 안됨 ㅇㅇ
-ip='220.94.81.28'
-s.connect((ip, 5335))
-
+ip='192.168.0.13'
+#ip='127.0.0.1'
+#ip='222.103.25.65'
+client_sock.connect((ip, 5335))
  
 ## webcam 이미지 capture
-cam = cv2.VideoCapture("실험용.mp4")
+#cam = cv2.VideoCapture(0)
+cam = cv2.VideoCapture("test.mp4")
  
 ## 이미지 속성 변경 3 = width, 4 = height
 cam.set(3, 320)
@@ -34,6 +36,10 @@ while True:
  
     #서버에 데이터 전송
     #(str(len(stringData))).encode().ljust(16)
-    s.sendall((str(len(stringData))).encode().ljust(16) + stringData)
+    client_sock.sendall((str(len(stringData))).encode().ljust(16) + stringData)
+
+    #서버에서 데이터 받아오기 테스트
+    data = client_sock.recv(4096)
+    print(data.decode())
  
-cam.release()
+cam.release(repr(data.decode()))
