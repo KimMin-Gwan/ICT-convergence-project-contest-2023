@@ -1,0 +1,37 @@
+'''
+제작자 : 박세빈
+제작일자 : 2023.03.16
+기능 : 포스넷 기능 테스트
+'''
+
+import cv2
+import posenet
+
+# Load the PoseNet model
+model = posenet.load_model('model_files/posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite')
+
+# Load the video
+cap = cv2.VideoCapture('video_file.mp4')
+
+# Loop over the frames in the video
+while True:
+    # Read the next frame from the video
+    ret, frame = cap.read()
+
+    if not ret:
+        break
+
+    # Run the PoseNet model on the frame
+    pose_scores, keypoint_scores, keypoint_coords = model.estimate_multiple_poses(frame)
+
+    # Visualize the results on the frame
+    overlay_image = posenet.draw_skel_and_kp(frame, pose_scores, keypoint_scores, keypoint_coords)
+
+    # Show the frame with the results
+    cv2.imshow('PoseNet', overlay_image)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
