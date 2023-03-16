@@ -125,13 +125,7 @@ def build_part_with_score_fast(score_threshold, local_max_radius, scores):
                 keypoint_id,
                 np.array((y, x))
             ))
-<<<<<<< Updated upstream
     #print(parts)
-=======
-    print(parts)
-    # parts = 세개의 항목을 가진 튜플 
-    # 첫번째 항목 = 키포인트 점수, 두번째 항목 = 키포인트의 ID?, 세번째 항목 = 키포인트의 위치 좌표
->>>>>>> Stashed changes
 
     return parts
 
@@ -153,28 +147,17 @@ def decode_multiple_poses(
     # 함수를 통해 반환된값을 score_parts에 저장하고 점수가 높은 순서대로 정렬하기
     scored_parts = build_part_with_score_fast(score_threshold, LOCAL_MAXIMUM_RADIUS, scores)
     scored_parts = sorted(scored_parts, key=lambda x: x[0], reverse=True)
-<<<<<<< Updated upstream
-    # change dimensions from (h, w, x) to (h, w, x//2, 2) to allow return of complete coord array
-=======
-
->>>>>>> Stashed changes
     height = scores.shape[0]
     width = scores.shape[1]
     # 각 배열을 재구성하고 마지막 두 축을 바꾸어 배열을 갱신
     offsets = offsets.reshape(height, width, 2, -1).swapaxes(2, 3)
     displacements_fwd = displacements_fwd.reshape(height, width, 2, -1).swapaxes(2, 3)
     displacements_bwd = displacements_bwd.reshape(height, width, 2, -1).swapaxes(2, 3)
-<<<<<<< Updated upstream
-    print('init offsets : ', offsets)
-    for root_score, root_id, root_coord in scored_parts:
-
-=======
 
     
     for root_score, root_id, root_coord in scored_parts:
 
         # 각 값을 이용하여 root_point의 이미지 좌표를 계산
->>>>>>> Stashed changes
         root_image_coords = root_coord * output_stride + offsets[
             root_coord[0], root_coord[1], root_id]
       
