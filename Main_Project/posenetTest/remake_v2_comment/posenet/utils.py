@@ -176,12 +176,13 @@ def draw_part_name(
             time.sleep(0.8)
 
         #채널 이동 (추가예정)
+        """
         if rightWrist_x < nose_x:
             print(rightWrist_x)
             print(nose_x)
             print("채널 증가")
             time.sleep(0.5)
-        
+        """
 
     return out_img
 
