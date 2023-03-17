@@ -1,12 +1,14 @@
-#import tensorflow as tf
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
+import tensorflow as tf
+
+#import tensorflow.compat.v1 as tf
+#tf.disable_v2_behavior()
+
+tf.compat.v1.disable_v2_behavior()
 import cv2
 import time
 import argparse
 import socket
 import numpy as np
-
 import posenet
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -35,7 +37,7 @@ def recvall(sock, count):
 
 
 def main():
-    with tf.Session() as sess:
+    with tf.compat.v1.Session() as sess: #텐서플로우 버전차이로 인해 세션을 인식못함(수정완료)
 
         model_cfg, model_outputs = posenet.load_model(args.model, sess)
         output_stride = model_cfg['output_stride']
