@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import posenet.constants
+import time
 
 
 def valid_resolution(width, height, output_stride=16):
@@ -96,9 +97,16 @@ def draw_part_name(
     out_img = img
     font = cv2.FONT_HERSHEY_SIMPLEX
     real_co = []
-    leftWrist = 0
-    rightWrist = 0
-    nose = 0
+    leftWrist_x = 0
+    leftWrist_y = 0
+    rightWrist_x = 0
+    rightWrist_y = 0
+    nose_x = 0
+    nose_y = 0
+    rightElbow_x = 0
+    rightElbow_y = 0
+    leftElbow_x = 0
+    leftElbow_y = 0
     
     for ii, score in enumerate(instance_scores):
 
@@ -124,22 +132,59 @@ def draw_part_name(
                 if s > min_part_score :
                     # 화면에 출력
                     cv2.putText(out_img, name, real_co, font, 1, (0, 0, 0), 1 ) 
-                    # 화면에 잡힌 손과 코의 y좌표를 저장
+                    # 화면에 잡힌 손과 코의 x,y좌표를 저장
+                    #constants.py에 있는 모듈이름 가져오기
                     if name == posenet.PART_NAMES[0]:
-                        nose = y
+                        nose_y = y
+                        nose_x = x
                     elif name == posenet.PART_NAMES[9]:
-                        leftWrist = y
+                        leftWrist_x = x
+                        leftWrist_y = y
                     elif name == posenet.PART_NAMES[10]:
-                        rightWrist = y
+                        leftWrist_x = x
+                        rightWrist_y = y
+                    elif name == posenet.PART_NAMES[7]:
+                        leftElbow_x = x
+                        leftElbow_y = y
+                    elif name == posenet.PART_NAMES[8]:
+                        leftElbow_x = x
+                        rightElbow_y = y
                 # 배열 비우기
                 real_co.clear()
     # 만약 왼손과 오른손이 화면에 잡히고
-    if leftWrist and rightWrist != 0:
-        # 두 손중 하나가 코 위에 있다면 아래의 코드를 실행한다.
-        if leftWrist < nose or rightWrist < nose :
-            print('hand is higher than nose now')
+    if leftWrist_y and rightWrist_y != 0:
+        # 부위중 인식이 안되는 부위가 있다면(좌표가 0이 된다면) 계속 실행되는 버그 수정
+        
+        #print(nose_x)
+        #print(nose_y)
+        
+        #소리 증가
+        if rightWrist_y < nose_y: #오른손이 손 위에 있다면
+            print('소리 빠름 증가') #소리는 느리게 증가
+            time.sleep(0.2)
+        if leftWrist_y < nose_y: #왼손이 코 위로 올리면
+            print('소리 느림 증가') #소리는 느리게 증가
+            time.sleep(0.8)
+
+
+        #소리 감소
+        if rightWrist_y > rightElbow_y and rightElbow_y != 0: #오른손이 팔꿈치 밑으로 내리면 
+            print('소리 빠름 감소') #소리 빠르게 감소
+            time.sleep(0.2)
+        if leftWrist_y > leftElbow_y and leftElbow_y != 0: #왼손이 팔꿈치 밑으로 내리면 
+            print('소리 느림 감소') #소리 느리게 감소
+            time.sleep(0.8)
+
+        #채널 이동 (추가예정)
+        if rightWrist_x < nose_x:
+            print(rightWrist_x)
+            print(nose_x)
+            print("채널 증가")
+            time.sleep(0.5)
+        
 
     return out_img
+
 
 
 
@@ -230,5 +275,6 @@ def draw_skel_and_kp(
             temp.extend(args)
         #print(temp)
     """
+
 
     return out_img
