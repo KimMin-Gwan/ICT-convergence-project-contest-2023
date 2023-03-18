@@ -54,7 +54,7 @@ def load_model(model_id, sess, model_dir=MODEL_DIR):
         'checkpoint_name': checkpoint_name, # mobilenet_v1_101
     }
     """
-    model_path = os.path.join(model_dir, 'modle-%s.pb' % model_cfg['checkpoint_name'])
+    model_path = os.path.join(model_dir, 'model-%s.pb' % model_cfg['checkpoint_name'])
     
     #대충 tfjs2python.py에서 convert함수를 통해 모델을 생성한다는 뜻
     if not os.path.exists(model_path):
