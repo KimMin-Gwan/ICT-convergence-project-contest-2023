@@ -14,9 +14,8 @@ def recvall(sock, count):
         count -= len(newbuf)
     return buf
  
+#서버 구동
 def server():
-    #Ip, PORT 설정
-
     #TCP 사용
     server_sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     print('Socket created')
@@ -34,6 +33,7 @@ def server():
 
     return conn,addr
  
+#cliet로 부터 웹캠 이미지(영상) 받아오기
 def get_stream(conn):
     # client에서 받은 stringData의 크기 (==(str(len(stringData))).encode().ljust(16))
     length = recvall(conn, 16)
@@ -47,6 +47,6 @@ def get_stream(conn):
 
     return frame
 
+    #client로 데이터 보내기
 def send(conn, command):
-    #client로 데이터 보내기 테스트
     conn.send(command.encode())
