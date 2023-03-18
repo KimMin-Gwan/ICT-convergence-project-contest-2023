@@ -44,7 +44,7 @@ def main():
         gesture = False # 행동의 제스처 판단 함수를 실행할지 결정하는 파라미터
         model_cfg, model_outputs = posenet.load_model(posenet.MODEL, sess)
         conn, addr = server.server_init()
-        command = 0
+        command = 'hello'
 
         while True:
             # frame 받아오기
@@ -60,7 +60,7 @@ def main():
                 # mediapip hand 실행전 초기화
                 if inital is False:
                     hands, count, inital = hand.hand_gesture(inital)
-                img_overlay, gesture, count = hand.check_trigger(img_overlay, hands, count)
+                img_overlay, gesture, count = hand.check_trigger(frame, hands, count)
             
             # 모션 제어로 넘어가려는게 확인되면 trigger를 종료해서 다시 포즈넷 가동
             if gesture is True:
@@ -68,7 +68,7 @@ def main():
             
             # command가 존재하고, 8 : done 이 아닐때 
             if command is not 0 and command is not 8:
-                server.send(conn, 'hello')
+                server.send(conn, command)
                 print('gesture detected')
             
             # 모션 제어를 종료하라는 신호가 오면 파라미터 초기화
