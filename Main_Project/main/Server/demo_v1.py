@@ -35,7 +35,6 @@ import server
 import posenet
 import hand
 import cv2
-import utils
 
 
 def main():
@@ -44,7 +43,7 @@ def main():
         inital = False # hand_gesture 초기화 플래그
         gesture = False # 행동의 제스처 판단 함수를 실행할지 결정하는 파라미터
         model_cfg, model_outputs = posenet.load_model(posenet.MODEL, sess)
-        conn, addr = server.server(server.HOST, server.PORT)
+        conn, addr = server.server()
         command = 0
 
         while True:
