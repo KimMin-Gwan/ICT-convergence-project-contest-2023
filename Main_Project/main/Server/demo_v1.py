@@ -68,10 +68,15 @@ def main():
             
             # command가 존재하고, 8 : done 이 아닐때 
             if command is not 0 and command is not 8:
-                server.send(conn, command)
+                server.send(conn, 'hello')
+                print('gesture detected')
             
             # 모션 제어를 종료하라는 신호가 오면 파라미터 초기화
             if command is 8:
+                command = 0
+                gesture = False
+
+            if command is 1:
                 command = 0
                 gesture = False
 
