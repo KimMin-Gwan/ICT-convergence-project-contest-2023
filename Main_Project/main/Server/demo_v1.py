@@ -43,45 +43,65 @@ def main():
         inital = False # hand_gesture 초기화 플래그
         gesture = False # 행동의 제스처 판단 함수를 실행할지 결정하는 파라미터
         model_cfg, model_outputs = posenet.load_model(posenet.MODEL, sess)
+        hands_data, count, now_dist = hand.hand_gesture()
+
         conn, addr = server.server_init()
         command = 'hello'
 
         while True:
             # frame 받아오기
             frame = server.get_stream(conn)
-            
-            if trigger is False:
+
                 # 원래 webcam_demo의 메인 반복문
                 #posnet_flag, trigger_y, hand_y = posenet.detection(img, model_cfg, model_outputs, sess, trigger)
-                img_overlay, trigger, command = posenet.detection(
-                    frame, model_cfg, model_outputs, sess, gesture, command
-                    )
-            else:
-                # mediapip hand 실행전 초기화
-                if inital is False:
-                    hands, count, inital = hand.hand_gesture(inital)
-                img_overlay, gesture, count = hand.check_trigger(frame, hands, count)
-            
+            img_overlay, trigger, command = posenet.detection(
+                frame, model_cfg, model_outputs, sess, gesture, command
+                )
+
             # 모션 제어로 넘어가려는게 확인되면 trigger를 종료해서 다시 포즈넷 가동
             if gesture is True:
                 trigger = False
-            
-            # command가 존재하고, 8 : done 이 아닐때 
-            if command is not 0 and command is not 8:
-                server.send(conn, command)
-                print('gesture detected')
+
+            if trigger is True:
+                # mediapip hand 실행전 초기화
+                img_overlay, gesture, count, now_dist = hand.check_trigger(
+                    frame, hands_data, count, now_dist
+                    )
+
+            if trigger is False and gesture is False:
+                command = 0
+
+            #if cv2.waitKey(1) & 0xFF == ord('q'):
+            #    command = 'NOT'
+
+            # send가 없으면 client측이 정지함       
+            server.send(conn, command)
             
             # 모션 제어를 종료하라는 신호가 오면 파라미터 초기화
             if command is 8:
                 command = 0
                 gesture = False
 
-            if command is 1:
-                command = 0
-                gesture = False
+
+            # 1. 포즈넷에서 코와 손목의 좌표를 받아오는 모드
+            # 2. 손이 머리 위로 올라갔을 때, trigger == True
+            # 3. trigger == True 일때는 손의 제스처를 판단해야함
+            #    3-1. 손의 제스처를 판단하는 도중에 손이 머리 아래로 내려온다면?
+            #    3-2. trigger == False로 바꿔서 1.로 돌아감
+
+            # 4. 손의 제스처가 인정되면, gesture == True 로 바꿔야함
+            #    4-1. gesture == True라면 trigger == False가 되어야함
+
+            # 5. gesture == True 라면 포즈넷에 모드를 모션 인식 모드로 바꿔야함
+            #    5-1. 모션 인신 모드 중에 손이 아래로 내려온다면?
+            #    5-2. gesture == False로 바꿔서 1.으로 돌아감
+
+            # 6. 모든 상황에서 command는 값이 존재하나, 0과 8번 이 아닐때만 전송함
+            # 7. command가 8번이라면 1.으로 돌아가야함
+            
 
             cv2.imshow('test', img_overlay)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            if cv2.waitKey(5) & 0xFF == 27:
                 break
 
 
