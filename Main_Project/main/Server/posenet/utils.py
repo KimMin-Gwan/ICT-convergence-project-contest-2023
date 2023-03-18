@@ -54,15 +54,9 @@ def read_cap(cap, scale_factor=1.0, output_stride=16):
 
     # cap.read 함수를 이용하여 프레임을 읽어오기
     # 비디오 프레임을 제대로 읽으면 res가 true, 실패시 false  / 읽은 프레임은 img
-    res, img = cap.read()
-
-    # res가 false인 경우 
-    if not res:
-        # 예외 발생 -> 함수 종료
-        raise IOError("webcam failure")
 
     # 반환값은 읽은 이미지를 함수를 통해 처리한 값    
-    return _process_input(img, scale_factor, output_stride)
+    return _process_input(cap, scale_factor, output_stride)
 
 
 # 점의 좌표를 가지고 오는 함수 (연결된 키포인트들의 좌표를 계산)
