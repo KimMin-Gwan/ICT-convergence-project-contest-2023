@@ -51,11 +51,31 @@ def get_stream(conn):
 
 #client로 데이터 보내기
 def send(conn, command):
+    message=""
+    if command == 0:
+        message = "nothing"
+    elif command == 1:
+        message = "next"
+    elif command == 2:
+        message = "previous"
+    elif command == 3:
+        message = "up"
+    elif command == 4:
+        message = "down"
+    elif command == 5:
+        message = "shutdown"
+    elif command == 6:
+        message = "turn on"
+    elif command == 7:
+        message = "others"
+    elif command == 8:
+        message = "done"
+    else:
+        message = "command not detected"
+    conn.send(message.encode())
     #스위치 case 문으로 작성하세요.
     # command 인덱스 
     # 0 : nothing, 1 : next, 2 : previous, 3 : up, 4 : down, 5 : shutdown
     # 6 : turn on  7 : others 8 : done(제스처 모드를 끄시오)
 
-
-
-    conn.send(command.encode())
+    
