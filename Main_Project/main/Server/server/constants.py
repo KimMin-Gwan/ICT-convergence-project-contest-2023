@@ -1,4 +1,5 @@
+import socket
 # 상수값을 보관
-HOST = '192.168.0.13'
-# #HOST= '127.0.0.1"
+HOST = socket.gethostname()
+# HOST= '127.0.0.1"
 PORT=5335
