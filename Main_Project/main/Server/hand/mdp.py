@@ -3,7 +3,7 @@ from hand.utils import get_coords, check_gesture
 import cv2
 import numpy as np
 
-def check_trigger(image, hands, count):
+def check_trigger(image, hands, count, now_dist):
     thumb_tip = None
     index_tip = None
     # 필요에 따라 성능 향상을 위해 이미지 작성을 불가능함으로 기본 설정합니다.
@@ -53,6 +53,6 @@ def check_trigger(image, hands, count):
 
     image = cv2.flip(image, 1)
 
-    return image, gesture, count
+    return image, gesture, count, now_dist
     
 
