@@ -27,9 +27,15 @@ def detection(frame, model_cfg, model_outputs, sess, gesture, command):
     #    min_pose_score=0.15, min_part_score=0.1)
 
     if gesture is True:
+        '''
         overlay_image, command = posenet.figure_out_command(
             display_image, pose_scores, keypoint_scores, keypoint_coords, command,
             min_pose_score=0.15, min_part_score=0.1)
+        '''
+        overlay_image, trigger = posenet.draw_part_name(
+            display_image, pose_scores, keypoint_scores, keypoint_coords,
+            min_pose_score=0.15, min_part_score=0.1)
+        command = 1
 
     else:
         overlay_image, trigger = posenet.draw_part_name(
