@@ -17,12 +17,13 @@ def check_gesture(thumb, index, now_dist):
     print('false : ', new_dist )
     return 0, new_dist, False
 
-def hand_gesture(intial):
-    with hand.mp_hands.Hands(
+def hand_gesture():
+    hands =  hand.mp_hands.Hands(
         model_complexity=0,
         min_detection_confidence=0.5,
-        min_tracking_confidence=0.5) as hands : 
-        hands_data = hands
-        inital = True
-        count = 1
-    return hands_data, count, inital
+        min_tracking_confidence=0.5)
+
+    hands_data = hands
+    count = 0
+    now_dist = 0
+    return hands_data, count, now_dist
