@@ -47,6 +47,15 @@ def get_stream(conn):
 
     return frame
 
-    #client로 데이터 보내기
+
+
+#client로 데이터 보내기
 def send(conn, command):
+    #스위치 case 문으로 작성하세요.
+    # command 인덱스 
+    # 0 : nothing, 1 : next, 2 : previous, 3 : up, 4 : down, 5 : shutdown
+    # 6 : turn on  7 : others 8 : done(제스처 모드를 끄시오)
+
+
+
     conn.send(command.encode())
