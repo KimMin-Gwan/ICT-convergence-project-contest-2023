@@ -3,7 +3,6 @@ import numpy as np
 import posenet.constants
 import time
 
-
 def valid_resolution(width, height, output_stride=16):
     target_width = (int(width) // output_stride) * output_stride + 1
     target_height = (int(height) // output_stride) * output_stride + 1
@@ -97,6 +96,7 @@ def draw_part_name(
     out_img = img
     font = cv2.FONT_HERSHEY_SIMPLEX
     real_co = []
+    #부위별 x좌표와 y좌표
     leftWrist_x = 0
     leftWrist_y = 0
     rightWrist_x = 0
@@ -107,6 +107,14 @@ def draw_part_name(
     rightElbow_y = 0
     leftElbow_x = 0
     leftElbow_y = 0
+    leftEye_x = 0
+    leftEye_y = 0
+    rightEye_x = 0
+    rightEye_y = 0
+    point_r_x = 0 #오른손 x 기준점
+    point_r_y = 0 #오른손 y 기준점
+    point_l_x = 0 #왼손 x 기준점
+    point_l_y = 0 #왼손 y 기준점
     
     for ii, score in enumerate(instance_scores):
 
@@ -149,40 +157,25 @@ def draw_part_name(
                     elif name == posenet.PART_NAMES[8]:
                         leftElbow_x = x
                         rightElbow_y = y
+                    elif name == posenet.PART_NAMES[1]:
+                        leftEye_x = x
+                        leftEye_y = y
+                    elif name == posenet.PART_NAMES[2]:
+                        rightEye_x = x
+                        rightEye_y = y
+                            
                 # 배열 비우기
                 real_co.clear()
     # 만약 왼손과 오른손이 화면에 잡히고
-    if leftWrist_y and rightWrist_y != 0:
-        # 부위중 인식이 안되는 부위가 있다면(좌표가 0이 된다면) 계속 실행되는 버그 수정
+    #if leftWrist_y and rightWrist_y != 0:
+    #여기서 기준점 잡고 작성하다 실패함
+    """
+    print("x")
+    print(leftEye_x)
+    print("y")
+    print(rightEye_y)
+    """
         
-        #print(nose_x)
-        #print(nose_y)
-        
-        #소리 증가
-        if rightWrist_y < nose_y: #오른손이 손 위에 있다면
-            print('소리 빠름 증가') #소리는 느리게 증가
-            time.sleep(0.2)
-        if leftWrist_y < nose_y: #왼손이 코 위로 올리면
-            print('소리 느림 증가') #소리는 느리게 증가
-            time.sleep(0.8)
-
-
-        #소리 감소
-        if rightWrist_y > rightElbow_y and rightElbow_y != 0: #오른손이 팔꿈치 밑으로 내리면 
-            print('소리 빠름 감소') #소리 빠르게 감소
-            time.sleep(0.2)
-        if leftWrist_y > leftElbow_y and leftElbow_y != 0: #왼손이 팔꿈치 밑으로 내리면 
-            print('소리 느림 감소') #소리 느리게 감소
-            time.sleep(0.8)
-
-        #채널 이동 (추가예정)
-        """
-        if rightWrist_x < nose_x:
-            print(rightWrist_x)
-            print(nose_x)
-            print("채널 증가")
-            time.sleep(0.5)
-        """
 
     return out_img
 
