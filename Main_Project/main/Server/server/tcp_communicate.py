@@ -15,7 +15,7 @@ def recvall(sock, count):
     return buf
  
 #서버 구동
-def server():
+def server_init():
     #TCP 사용
     server_sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     print('Socket created')
