@@ -31,14 +31,14 @@ def get_command_1_2(parts, command):
     if parts.count == 0:
         #'왼손일 때'
         if parts.initial_position[0] is 'LEFT':
-            diff = parts.l_hand['x'] - parts.initial_position[0]['x']
+            diff = parts.l_hand['x'] - parts.initial_position[1]['x']
             parts.command_1_2_cal(diff)
 
         
         #'오른손일 때'
         elif parts.inital_position[0] is 'RIGHT':
 
-            diff = parts.l_hand['x'] - parts.moved_position['x']
+            diff = parts.l_hand['x'] - parts.moved_position[1]['x']
             parts.command_1_2_cal(diff)
         
         parts.two_hand = False
@@ -46,13 +46,13 @@ def get_command_1_2(parts, command):
     else:
         if parts.initial_position[0] is 'LEFT':
 
-            diff = parts.l_hand['x'] - parts.moved_position[0]['x']
+            diff = parts.l_hand['x'] - parts.moved_position[1]['x']
             parts.command_1_2_cal(diff)
 
         
         #'오른손일 때'
         elif parts.inital_position[0] is 'RIGHT':
-            diff = parts.r_hand['x'] - parts.moved_postiion[0]['x']
+            diff = parts.r_hand['x'] - parts.moved_postiion[1]['x']
             parts.command_1_2_cal(diff)
     
     
@@ -77,14 +77,104 @@ def get_command_3_4_5_6(parts, command):
     #   위아래로 많이 움직이면, 기준손을 변경해야함
     #   거리가 줄어들면 5, 6번을 반환해야함
 
+    # 방향 플래그
+    path_flag = None # True : 상승, False : 하강
+    parts.get_other_hand(parts.initial_position[0])
+
     if parts.count == 0:
+    
+        # 반대손이 움직이는 지 확인
+        parts.other_hand_check()
+        
+        #반대손이 고정되어 있다면
+        if parts.dist < 10:
+            #기준 손의 값이 변화하는 것을 확인해야함
+            if parts.initial_position[0] is 'LEFT':
+                diff = parts.initial_position[1]['y'] - parts.l_hand['y'] 
+                if diff < 0 :
+                    path_flag = False 
+
+                elif diff > 0:
+                    path_flag = True 
+            
+            if parts.initial_position[0] is 'RIGHT':
+                diff = parts.initial_position[1]['y'] - parts.r_hand['y'] 
+                if diff < 0 :
+                    path_flag = False
+
+                elif diff > 0:
+                    path_flag = True 
+        
+        else:
+            if parts.initial_position[0] is 'LEFT':
+                diff = parts.other_hand_position[1]['x'] - parts.l_hand['x']
+
+            elif parts.initial_position[0] is 'RIGHT':
+                diff = parts.other_hand_position[1]['x'] - parts.l_hand['x']
+
+    else:
         parts.get_other_hand(parts.initial_position[0])
     
-    flag = parts.other_hand_check()
-    
-    if 
+        # 반대손이 움직이는 지 확인
+        parts.other_hand_check()
+        
+        #반대손이 고정되어 있다면
+        if parts.dist < 10:
+            #기준 손의 값이 변화하는 것을 확인해야함
+            if parts.initial_position[0] is 'LEFT':
+                diff = parts.moved_position[1]['y'] - parts.l_hand['y'] 
+                if diff < 0 :
+                    path_flag = False 
 
+                elif diff > 0:
+                    path_flag = True 
+            
+            if parts.initial_position[0] is 'RIGHT':
+                diff = parts.moved_position[1]['y'] - parts.r_hand['y'] 
+                if diff < 0 :
+                    path_flag = False
 
+                elif diff > 0:
+                    path_flag = True 
+
+        else:
+            if parts.initial_position[0] is 'LEFT':
+                diff = parts.other_hand_position[1]['x'] - parts.l_hand['x']
+                path_flag = None
+
+            elif parts.initial_position[0] is 'RIGHT':
+                diff = parts.other_hand_position[1]['x'] - parts.l_hand['x']
+                path_flag = None
+
+    # 하강 이라면
+    if path_flag is False: 
+        if abs(diff) < parts.eye_dist:
+            command = 7
+        elif abs(diff) > parts.eye_dist:
+            if parts.initial_position[0] is 'LEFT':
+                parts.moved_position[1].update(parts.l_hand)
+            elif parts.initial_position[0] is 'RIGHT':
+                parts.moved_position[1].update(parts.r_hand)
+            command = 4
+
+    #상승 이라면
+    elif path_flag is True: 
+        if abs(diff) < parts.eye_dist:
+            command = 7
+        if abs(diff) > parts.eye_dist:
+            if parts.initial_position[0] is 'LEFT':
+                parts.moved_position[1].update(parts.l_hand)
+            elif parts.initial_position[0] is 'RIGHT':
+                parts.moved_position[1].update(parts.r_hand)
+            command = 3
+    # 이외에는 대기
+    else:
+        if abs(diff) < parts.eye_dist:
+            command = 5
+        else:
+            command = 7
+
+    return command, parts
 
     
 
@@ -205,6 +295,10 @@ def figure_out_command(
         if parts.check_return() is False:
             command = 7
             return display_image, command, parts
+        command = 7
+    
+    # 투핸드 모드에서 한번 보내고나면 다시 초기화 시키는 함수
+    if command is 3 or command is 4:
         command = 7
 
     # 커멘드를 받아오는 부분

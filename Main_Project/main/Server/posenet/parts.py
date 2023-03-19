@@ -114,9 +114,9 @@ class Parts():
     def check_return(self):
         if self.initial_position[0] is 'LEFT':
             diff = get_dist(
-                self.initial_position[0]['x'],
+                self.initial_position[1]['x'],
                 self.l_hand['x'],
-                self.initial_position[0]['y'],
+                self.initial_position[1]['y'],
                 self.l_hand['y'],
             )
             if diff < 10:
@@ -126,9 +126,9 @@ class Parts():
 
         elif self.initial_position[0] is 'RIGHT':
             diff = get_dist(
-                self.initial_position[0]['x'],
+                self.initial_position[1]['x'],
                 self.r_hand['x'],
-                self.initial_position[0]['y'],
+                self.initial_position[1]['y'],
                 self.r_hand['y'],
             )
             if diff < 10:
@@ -155,51 +155,59 @@ class Parts():
         if self.initial_position[0] is 'LEFT':
             if diff < 0:
                 if abs(diff) > 5:
-                    self.moved_position['x'] = self.l_hand['x']
+                    self.moved_position[1]['x'] = self.l_hand['x']
                     self.diff = np.append(self.diff, diff)
                     self.addCounter()
 
             elif diff > 0:
                 if abs(diff) > 5:
-                    self.moved_position['x'] = self.l_hand['x']
+                    self.moved_position[1]['x'] = self.l_hand['x']
                     self.diff = np.append(self.diff, diff)
                     self.addCounter()
 
         if self.initial_position[0] is 'RIGHT':
             if diff < 0:
                 if abs(diff) > 5:
-                    self.moved_position['x'] = self.l_hand['x']
+                    self.moved_position[1]['x'] = self.l_hand['x']
                     self.diff = np.append(self.diff, diff)
                     self.addCounter()
 
             if diff > 0:
                 if abs(diff) > 5:
-                    self.moved_position['x'] = self.r_hand['x']
+                    self.moved_position[1]['x'] = self.r_hand['x']
                     self.diff = np.append(self.diff, diff)
                     self.addCounter()
 
     def get_other_hand(self, key):
         if key is 'LEFT':
             self.other_hand_position[0] = "RIGHT"
-            self.other_hand_position[0]['x'] = self.r_hand['x']
-            self.other_hand_position[0]['y'] = self.r_hand['y']
+            self.other_hand_position[1]['x'] = self.r_hand['x']
+            self.other_hand_position[1]['y'] = self.r_hand['y']
         elif key is 'RIGHT':
             self.other_hand_position[0] = "LEFT"
-            self.other_hand_position[0]['x'] = self.l_hand['x']
-            self.other_hand_position[0]['y'] = self.l_hand['y']
+            self.other_hand_position[1]['x'] = self.l_hand['x']
+            self.other_hand_position[1]['y'] = self.l_hand['y']
         else :
             self.other_hand_position[0] = "NONE"
-            self.other_hand_position[0]['x'] = 0
-            self.other_hand_position[0]['y'] = 0
+            self.other_hand_position[1]['x'] = 0
+            self.other_hand_position[1]['y'] = 0
     
     def other_hand_check(self):
         if self.other_hand_position[0] is 'LEFT':
+            x1 = self.other_hand_position[1]['x']
+            x2 = self.r_hand['x']
+            y1 = self.other_hand_position[1]['y']
+            y2 = self.r_hand['y']
+            self.dist = get_dist(x1, x2, y1, y2)
 
         elif self.other_hand_position[0] is 'RIGHT':
+            x1 = self.other_hand_position[1]['x']
+            x2 = self.l_hand['x']
+            y1 = self.other_hand_position[1]['y']
+            y2 = self.l_hand['y']
+            self.dist = get_dist(x1, x2, y1, y2)
 
         else :
-            self.other_hand_position[0] = "NONE"
-            self.other_hand_position[0]['x'] = 0
-            self.other_hand_position[0]['y'] = 0
+            self.dist = 0
         
 
