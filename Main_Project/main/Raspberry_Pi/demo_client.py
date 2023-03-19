@@ -1,14 +1,14 @@
 import RPi.GPIO as GPIO
 import server
-from IR_trans import IR_sensor
+import utils
 
 # GPIO 모듈 BOARD 모드로 사용
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 
-GREEN_LED = 11 # 초록색 LED 11번 핀에 연결
-BLUE_LED = 13 # 파란색 LED 13번 핀에 연결
-RED_LED = 15 # 빨간색 LED 15번 핀에 연결
+GREEN_LED = 11  # 초록색 LED 11번 핀에 연결
+BLUE_LED = 13  # 파란색 LED 13번 핀에 연결
+RED_LED = 15  # 빨간색 LED 15번 핀에 연결
 
 # LED 초기화 
 # 초록색은 프로그램을 실행여부를 보이는 것으로 초기상태도 켜져있음.
@@ -35,33 +35,12 @@ def main():
             # 제스쳐모드가 실행되었다는 의미로 파란색 LED 켜기
             GPIO.output(BLUE_LED, True)
 
-            # 커멘드의 값이 'next'일 경우
-            if command == 1:
-                # 채널 업 
-                IR_sensor.tv_channelup()
-
-            # 커멘드의 값이 'previous'일 경우
-            elif command == 2:
-                # 채널 다운
-                IR_sensor.tv_channeldown()
-            
-            # 커멘드의 값이 'up'일 경우
-            elif command == 3:
-                # 볼륨 업
-                IR_sensor.tv_volumeup()
-            
-            # 커멘드의 값이 'down'일 경우
-            elif command == 4:
-                # 볼륨 다운 
-                IR_sensor.tv_volumedown()
-            
-            # 커멘드의 값이 'turn on'일 경우
-            elif command == 6:
-                # 전원 on
-                IR_sensor.tv_power()
+            if command >= 1 and command <= 6:
+                # 커멘드 처리하는 함수를 이용하여 command 값에 맞는 처리하기
+                utils.handle_command(command)
             
             # 커멘드의 값이 'done'일 경우
-            elif command == 8:
+            if command == 8:
                 # 제스쳐모드를 중단한다는 의미이므로 파란색 LED 끄기
                 GPIO.output(BLUE_LED, False)
                 break 
@@ -73,6 +52,7 @@ def main():
 
     # GPIO 리셋    
     GPIO.cleanup()
+
 
 if __name__ == "__main__":
     main()
