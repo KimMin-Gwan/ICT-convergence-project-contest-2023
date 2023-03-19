@@ -44,9 +44,10 @@ def main():
         gesture = False # 행동의 제스처 판단 함수를 실행할지 결정하는 파라미터
         model_cfg, model_outputs = posenet.load_model(posenet.MODEL, sess)
         hands_data, count, now_dist = hand.hand_gesture()
+        parts = posenet.Parts()
 
         conn, addr = server.server_init()
-        command = 'hello'
+        command = 0
 
         while True:
             # frame 받아오기
@@ -54,8 +55,8 @@ def main():
 
                 # 원래 webcam_demo의 메인 반복문
                 #posnet_flag, trigger_y, hand_y = posenet.detection(img, model_cfg, model_outputs, sess, trigger)
-            img_overlay, trigger, command = posenet.detection(
-                frame, model_cfg, model_outputs, sess, gesture, command
+            img_overlay, trigger, command, parts = posenet.detection(
+                frame, model_cfg, model_outputs, sess, gesture, command, parts
                 )
 
             # 모션 제어로 넘어가려는게 확인되면 trigger를 종료해서 다시 포즈넷 가동
@@ -72,7 +73,7 @@ def main():
                 command = 0
 
             #if cv2.waitKey(1) & 0xFF == ord('q'):
-            #    command = 'NOT'
+            #    command += 1
 
             # send가 없으면 client측이 정지함       
             server.send(conn, command)
