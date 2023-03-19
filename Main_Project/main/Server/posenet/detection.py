@@ -2,7 +2,7 @@ import cv2
 import posenet
 
 # 본문에 있던 while 돌아가는 부분
-def detection(frame, model_cfg, model_outputs, sess, gesture, command):
+def detection(frame, model_cfg, model_outputs, sess, gesture, command, parts):
     input_image, display_image, output_scale = posenet.read_cap(
         frame, scale_factor=posenet.SCALE_FACTOR, output_stride=model_cfg['output_stride'])
 
@@ -27,15 +27,14 @@ def detection(frame, model_cfg, model_outputs, sess, gesture, command):
     #    min_pose_score=0.15, min_part_score=0.1)
 
     if gesture is True:
-        '''
-        overlay_image, command = posenet.figure_out_command(
-            display_image, pose_scores, keypoint_scores, keypoint_coords, command,
-            min_pose_score=0.15, min_part_score=0.1)
+        overlay_image, command, parts = posenet.figure_out_command(
+            display_image, pose_scores, keypoint_scores, keypoint_coords, command, parts)
         '''
         overlay_image, trigger = posenet.draw_part_name(
             display_image, pose_scores, keypoint_scores, keypoint_coords,
             min_pose_score=0.15, min_part_score=0.1)
         command = 1
+        '''
 
     else:
         overlay_image, trigger = posenet.draw_part_name(
@@ -43,4 +42,4 @@ def detection(frame, model_cfg, model_outputs, sess, gesture, command):
             min_pose_score=0.15, min_part_score=0.1)
     
     
-    return overlay_image, trigger, command
+    return overlay_image, trigger, command, parts
