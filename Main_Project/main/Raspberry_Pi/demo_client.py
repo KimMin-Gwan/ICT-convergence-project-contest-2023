@@ -1,60 +1,78 @@
+import RPi.GPIO as GPIO
 import server
-import IR_sensor
-import utils
+from IR_trans import IR_sensor
 
-# 초기값 값 설정
-# 서버 초기값 설정
-# IR 센서 초기값 설정
-server.argument()
-IR_sensor.setup()
+# GPIO 모듈 BOARD 모드로 사용
+GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(False)
 
-# 초록색 LED를 켜는 함수(프로그램 동작)
-def turn_on_green_LED():
-    IR_sensor.turn_on_LED("green")
-    IR_sensor.turn_off_LED("red")
-    IR_sensor.turn_off_LED("blue")
+GREEN_LED = 11 # 초록색 LED 11번 핀에 연결
+BLUE_LED = 13 # 파란색 LED 13번 핀에 연결
+RED_LED = 15 # 빨간색 LED 15번 핀에 연결
 
-# 파란색 LED를 켜는 함수(커멘드가 0이 아닐경우)
-def turn_on_blue_LED():
-    IR_sensor.turn_off_LED("green")
-    IR_sensor.turn_off_LED("red")
-    IR_sensor.turn_on_LED("blue")
+# LED 초기화 
+# 초록색은 프로그램을 실행여부를 보이는 것으로 초기상태도 켜져있음.
+GPIO.setup(GREEN_LED, GPIO.OUT, initial=GPIO.HIGH)
+GPIO.setup(BLUE_LED, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(RED_LED, GPIO.OUT, initial=GPIO.LOW)
 
-# 빨간색 LED를 켜는 함수 (커멘드가 0일 경우)
-def turn_on_red_LED():
-    IR_sensor.turn_off_LED("green")
-    IR_sensor.turn_on_LED("red")
-    IR_sensor.turn_off_LED("blue")
 
-# 기본 상태를 초록색 LED가 켜짐으로써 확인하기
-turn_on_green_LED()
+def main():
 
-# 통신이 끊어지 않는한 무한 반복
-while True:
-    # 서버로 데이터 전송하기
-    server.send()    
+    while True:
 
-    # 커멘드 수신하기
-    command = server.get()
+        # 서버에서 커멘드의 값 받아오기(문자열 형태)
+        command = server.get()
 
-    # 커멘드가 0번일 경우
-    if command == 0:
-        # 빨간색 LED를 켜기
-        turn_on_red_LED()
+        if command == 'command not detected':
+            # 커멘드를 인식하지 못한다는 의미로 빨간색 LED 켜기
+            GPIO.output(RED_LED, True)
+            # 반복문 중단하기 
+            break
+            
+        # 커멘드의 값이 0이 아닐 경우
+        if command != 0:
+            # 제스쳐모드가 실행되었다는 의미로 파란색 LED 켜기
+            GPIO.output(BLUE_LED, True)
 
-    # 커맨드가 0이 아닐 경우
-    else:
-        # 파란색 LED를 켜기 
-        turn_on_blue_LED()
+            # 커멘드의 값이 'next'일 경우
+            if command == 1:
+                # 채널 업 
+                IR_sensor.tv_channelup()
 
-    # 현재 상태 가져오기
-    status = utils.get_status()
+            # 커멘드의 값이 'previous'일 경우
+            elif command == 2:
+                # 채널 다운
+                IR_sensor.tv_channeldown()
+            
+            # 커멘드의 값이 'up'일 경우
+            elif command == 3:
+                # 볼륨 업
+                IR_sensor.tv_volumeup()
+            
+            # 커멘드의 값이 'down'일 경우
+            elif command == 4:
+                # 볼륨 다운 
+                IR_sensor.tv_volumedown()
+            
+            # 커멘드의 값이 'turn on'일 경우
+            elif command == 6:
+                # 전원 on
+                IR_sensor.tv_power()
+            
+            # 커멘드의 값이 'done'일 경우
+            elif command == 8:
+                # 제스쳐모드를 중단한다는 의미이므로 파란색 LED 끄기
+                GPIO.output(BLUE_LED, False)
+                break 
 
-    # 상태에 따라 LED 색상 변경하기 
-    if status == "on":
-        IR_sensor.turn_on_LED()
-    elif status == "off":
-        turn_on_red_LED()
-    
-    # 다시 초록색 LED를 켜기 (기본상태라는 뜻)
-    turn_on_green_LED()
+        # 커멘드의 값이 0일 경우 (아무 동작 없음)
+        else:
+            # 다음 반복문 실행하기 
+            continue
+
+    # GPIO 리셋    
+    GPIO.cleanup()
+
+if __name__ == "__main__":
+    main()

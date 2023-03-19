@@ -17,5 +17,5 @@ def tv_volumedown():
     os.system('irsend SEND_ONCE wow4 KEY_VOLUMEDOWN')
 
 #소리 키움
-def tv_volumedown():
+def tv_volumeup():
     os.system('irsend SEND_ONCE wow4 KEY_VOLUMEUP')
