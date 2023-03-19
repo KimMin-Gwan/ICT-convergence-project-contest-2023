@@ -5,3 +5,4 @@ from posenet.utils import *
 from posenet.argument import *
 from posenet.detection import *
 from posenet.gesture_mode import *
+from posenet.parts import Parts
