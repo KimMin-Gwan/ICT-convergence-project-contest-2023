@@ -10,11 +10,9 @@
 
 # Contents
  + 딥러닝 모델의 Predict는 서버를 통해 연산
- + 핵심 라이브러리 : Pytorch, scikit-learn, tflite, cv2, keras, pandas, numpy 등
+ + 핵심 라이브러리 : tensorflow, mediapip, socket, cv2, numpy 등
  + 라즈베리 파이와 관련된 제품 : Raspberry Pi 4, Pi Camera v1, RI transmitter
  + 사용되는 딥러닝 모델 : Mobile_net_ssd_v1, posenet
- + 사용되는 데이터 셋 : 
- + [kaggle_data](https://www.kaggle.com/datasets/sarjit07/hand-gesture-recog-dataset)
  
 <br>
 
