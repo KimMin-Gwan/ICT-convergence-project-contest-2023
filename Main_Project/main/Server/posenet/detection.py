@@ -6,6 +6,7 @@ def detection(frame, model_cfg, model_outputs, sess, gesture, command, parts):
     input_image, display_image, output_scale = posenet.read_cap(
         frame, scale_factor=posenet.SCALE_FACTOR, output_stride=model_cfg['output_stride'])
 
+    trigger = None
     heatmaps_result, offsets_result, displacement_fwd_result, displacement_bwd_result = sess.run(
         model_outputs,
         feed_dict={'image:0': input_image}
@@ -40,6 +41,8 @@ def detection(frame, model_cfg, model_outputs, sess, gesture, command, parts):
         overlay_image, trigger = posenet.draw_part_name(
             display_image, pose_scores, keypoint_scores, keypoint_coords,
             min_pose_score=0.15, min_part_score=0.1)
-    
+
+       
+    overlay_image= cv2.flip(overlay_image, 1)
     
     return overlay_image, trigger, command, parts
