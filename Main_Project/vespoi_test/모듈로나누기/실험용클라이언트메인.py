@@ -19,7 +19,7 @@ import cv2
 
 def main():
     # 서버 초기값 설정
-    sock = client.client_sock('221.166.185.6',5335) #사용시 IP 변경 필요
+    sock = client.client_sock('125.137.26.184',5335) #사용시 IP 변경 필요
     cam, encode_param = client.set_cam()
 
 

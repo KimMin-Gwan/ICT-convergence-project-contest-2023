@@ -14,8 +14,8 @@ def client_sock(IP, PORT):
 
 def set_cam():
     ## webcam 이미지 capture
-    #cam = cv2.VideoCapture(0)          #webcam 사용
-    cam = cv2.VideoCapture("test.mp4")  #테스트용 mp4 사용
+    cam = cv2.VideoCapture(0)          #webcam 사용
+    #cam = cv2.VideoCapture("test.mp4")  #테스트용 mp4 사용
     
     ## 이미지 속성 변경 3 = width, 4 = height
     cam.set(3, 320)
