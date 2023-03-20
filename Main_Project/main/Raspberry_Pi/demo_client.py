@@ -18,11 +18,13 @@ GPIO.setup(RED_LED, GPIO.OUT, initial=GPIO.LOW)
 
 
 def main():
+    sock = server.client_sock()
+    cam , encode_param = server.set_cam()
 
     while True:
 
         # 서버로 데이터 보내기
-        server.send()
+        server.send(sock, cam, encode_param)
 
         # 서버에서 커멘드의 값 받아오기(문자열 형태)
         command = server.get()
