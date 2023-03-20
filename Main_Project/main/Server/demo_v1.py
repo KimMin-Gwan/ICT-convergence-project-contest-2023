@@ -79,7 +79,7 @@ def main():
             server.send(conn, command)
             
             # 모션 제어를 종료하라는 신호가 오면 파라미터 초기화
-            if command is 8:
+            if command is 8 or command is 5:
                 command = 0
                 gesture = False
 
