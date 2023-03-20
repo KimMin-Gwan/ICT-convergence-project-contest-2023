@@ -124,7 +124,7 @@ def draw_part_name(
                 # 배열 비우기
                 real_co.clear()
     # 만약 왼손과 오른손이 화면에 잡히고
-    if leftWrist and rightWrist != 0:
+    if leftWrist != 0 or rightWrist != 0:
         # 두 손중 하나가 코 위에 있다면 아래의 코드를 실행한다.
         if leftWrist < nose or rightWrist < nose :
             print('hand is higher than nose now')
