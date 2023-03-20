@@ -82,7 +82,7 @@ def get_command_3_4_5_6(parts, command):
     if parts.count == 0:
     
         # 반대손이 움직이는 지 확인
-        parts.other_hand_check()
+        #parts.other_hand_check()
         
         #반대손이 고정되어 있다면
         if parts.dist < 10:
@@ -111,10 +111,10 @@ def get_command_3_4_5_6(parts, command):
                 diff = parts.other_hand_position[1]['x'] - parts.l_hand['x']
 
     else:
-        parts.get_other_hand(parts.initial_position[0])
+        #parts.get_other_hand(parts.initial_position[0])
     
         # 반대손이 움직이는 지 확인
-        parts.other_hand_check()
+        #parts.other_hand_check()
         
         #반대손이 고정되어 있다면
         if parts.dist < 10:
