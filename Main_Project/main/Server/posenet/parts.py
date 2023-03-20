@@ -3,14 +3,14 @@ import numpy as np
 import math
 
 def get_dist(x1, x2, y1, y2):
-    dist_power = (x2 - x1) ** 2 + (y1 - y2) ** 2
+    dist_power = (x2 - x1) ** 2 + (y2 - y1) ** 2
     return math.sqrt(dist_power)
 
 # Parts 객체
 class Parts():
     #기본 생성자 
     def __init__(self):
-        self.nose = 0
+        self.nose = None
         self.l_hand = {'x': 0, 'y': 0}
         self.r_hand = {'x': 0, 'y': 0}
         self.l_eye = {'x': 0, 'y': 0}
@@ -23,7 +23,7 @@ class Parts():
         self.moved_position = ['None', {'x': 0, 'y': 0}] # 연산 중 임시 기록 위치
         self.other_hand_position = ['None', {'x' : 0, 'y' : 0}] # 기준 반대손
         self.counter = 0  # 변화하는 값 갯수 체크
-        self.two_hand = None
+        self.two_hand = False
         self.diff = np.array([])
 
     # 처음으로 초기화
@@ -41,7 +41,15 @@ class Parts():
         self.moved_position = ['None', {'x': 0, 'y': 0}] # 연산 중 임시 기록 위치
         self.other_hand_position = ['None', {'x' : 0, 'y' : 0}] # 기준 반대손
         self.counter = 0
-        self.two_hand = None
+        self.two_hand = False
+        self.diff = np.array([])
+
+    def return_reset(self):
+        self.init_flag = True  # 초기위치 정했는지 flag(init은 안할꺼라 True)
+        self.return_flag = True # 초기위치 복귀 확인 : return reset이니까 True
+        self.moved_position = ['None', {'x': 0, 'y': 0}] # 연산 중 임시 기록 위치
+        self.other_hand_position = ['None', {'x' : 0, 'y' : 0}] # 기준 반대손
+        self.counter = 0
         self.diff = np.array([])
 
     def nose_coord(self, y):
@@ -70,13 +78,16 @@ class Parts():
         r_y = self.r_eye['y']
 
         self.eye_dist = get_dist(l_x, r_x, l_y, r_y)   
+        self.ref = self.eye_dist // 6
 
     # 제스처 모드 종료 확인
     def check_switch(self):
-        if self.l_hand['y'] > self.nose or self.r_hand['y'] > self.nose:
-            self.switch = True
-        else:
-            self.switch = False
+        if self.l_hand['y'] != 0 or self.r_hand['y'] != 0:
+            if self.l_hand['y'] < self.nose or self.r_hand['y'] < self.nose:
+                self.switch = True
+            else:
+                self.switch = False
+            return self.switch
         return self.switch
     
     #  손의 초기 위치 확인
@@ -101,14 +112,19 @@ class Parts():
             self.initial_position[1] = {'x': self.l_hand['x'], 'y': self.l_hand['y']}
             self.init_flag = True
 
+        self.get_eye_dist()
+
     def check_two_hand(self):
         # True이면 양손 모드, False는 한손 모드
-        if self.l_hand['y'] > self.nose and self.r_hand['y'] > self.nose:
-            self.two_hand = True
-            return self.two_hand
+        if self.l_hand['y'] != 0 or self.r_hand['y'] != 0:
+            if self.l_hand['y'] < self.nose and self.r_hand['y'] < self.nose:
+                self.two_hand = True
+                return self.two_hand
+            else:
+                self.two_hand = False 
+                return self.two_hand 
         else:
-            self.one_hand = False 
-            return False
+            return self.two_hand
 
     # 손의 처음 위치와 현재 위치의 차이를 파악하는 함수
     def check_return(self):
@@ -119,7 +135,8 @@ class Parts():
                 self.initial_position[1]['y'],
                 self.l_hand['y'],
             )
-            if diff < 10:
+            print('chekc diff : ', diff)
+            if diff < self.ref:
                 return True
             else:
                 return False
@@ -131,6 +148,7 @@ class Parts():
                 self.initial_position[1]['y'],
                 self.r_hand['y'],
             )
+            print('chekc diff : ', diff)
             if diff < 10:
                 return True
             else:
@@ -146,34 +164,33 @@ class Parts():
     # 카운터 리셋
     def resetCounter(self):
         self.counter = 0
-        self.diff = None
-        self.two_hand = None
+        self.diff = np.array([])
 
 
     # 한손일 때 구분하는 맴버 함수 
     def command_1_2_cal(self, diff):
         if self.initial_position[0] is 'LEFT':
             if diff < 0:
-                if abs(diff) > 5:
+                if abs(diff) >= self.ref:
                     self.moved_position[1]['x'] = self.l_hand['x']
                     self.diff = np.append(self.diff, diff)
                     self.addCounter()
 
-            elif diff > 0:
-                if abs(diff) > 5:
+            else :
+                if abs(diff) >= self.ref:
                     self.moved_position[1]['x'] = self.l_hand['x']
                     self.diff = np.append(self.diff, diff)
                     self.addCounter()
 
         if self.initial_position[0] is 'RIGHT':
             if diff < 0:
-                if abs(diff) > 5:
-                    self.moved_position[1]['x'] = self.l_hand['x']
+                if abs(diff) >= self.ref:
+                    self.moved_position[1]['x'] = self.r_hand['x']
                     self.diff = np.append(self.diff, diff)
                     self.addCounter()
 
-            if diff > 0:
-                if abs(diff) > 5:
+            else :
+                if abs(diff) >= self.ref:
                     self.moved_position[1]['x'] = self.r_hand['x']
                     self.diff = np.append(self.diff, diff)
                     self.addCounter()
@@ -195,17 +212,19 @@ class Parts():
     def other_hand_check(self):
         if self.other_hand_position[0] is 'LEFT':
             x1 = self.other_hand_position[1]['x']
-            x2 = self.r_hand['x']
-            y1 = self.other_hand_position[1]['y']
-            y2 = self.r_hand['y']
-            self.dist = get_dist(x1, x2, y1, y2)
+            x2 = self.l_hand['x']
+            #y1 = self.other_hand_position[1]['y']
+            #y2 = self.r_hand['y']
+            self.dist = x1 - x2
+            #self.dist = get_dist(x1, x2, y1, y2)
 
         elif self.other_hand_position[0] is 'RIGHT':
             x1 = self.other_hand_position[1]['x']
-            x2 = self.l_hand['x']
-            y1 = self.other_hand_position[1]['y']
-            y2 = self.l_hand['y']
-            self.dist = get_dist(x1, x2, y1, y2)
+            x2 = self.r_hand['x']
+            #y1 = self.other_hand_position[1]['y']
+            #y2 = self.l_hand['y']
+            self.dist = x1 - x2
+            #self.dist = get_dist(x1, x2, y1, y2)
 
         else :
             self.dist = 0
