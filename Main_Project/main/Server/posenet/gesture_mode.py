@@ -8,7 +8,6 @@ from posenet.parts import Parts
 
 # 값이 전체적으로 증가하는지 감소하는지 구분하는 함수
 def trend(x):
-
     sumDiff = np.sum(x)
 
     if sumDiff < 0 :
@@ -105,7 +104,7 @@ def get_command_3_4_5_6(parts, command):
     else:
     
         # 반대손이 움직이는 지 확인
-        parts.other_hand_check()
+        #parts.other_hand_check()
         
         #반대손이 고정되어 있다면
         if parts.dist < 20:
