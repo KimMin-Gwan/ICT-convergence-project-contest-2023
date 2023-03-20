@@ -13,8 +13,6 @@ def trend(x):
         return 1 # 증가
     elif np.all(diff > 0):
         return 0 # 감소
-    elif np.any(diff == 0):
-        return 7 # 변화 없음
     else:
         return 7 # fluctuating
 
