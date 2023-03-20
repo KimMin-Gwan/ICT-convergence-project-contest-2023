@@ -12,9 +12,9 @@ def check_gesture(thumb, index, now_dist):
     new_dist = np.sqrt(x_2 + y_2)
 
     if new_dist > now_dist + 0.001:
-        print('True : ', new_dist)
+        #print('True : ', new_dist)
         return 1, new_dist, True
-    print('false : ', new_dist )
+    #print('false : ', new_dist )
     return 0, new_dist, False
 
 def hand_gesture():
