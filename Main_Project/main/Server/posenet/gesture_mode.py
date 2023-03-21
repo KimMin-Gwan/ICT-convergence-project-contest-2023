@@ -85,20 +85,34 @@ def get_command_3_4_5_6(parts, command):
         #기준 손의 값이 변화하는 것을 확인해야함
         if parts.initial_position[0] is 'LEFT':
             diff = parts.initial_position[1]['y'] - parts.l_hand['y'] 
-            if diff < 0 :
+            if diff == parts.initial_position[1]['y']:
+                path_flag = 0
+
+            elif diff < 0 :
                 path_flag = 2 
 
             elif diff > 0:
                 path_flag = 1 
+            
+            else:
+                path_flag = 0
+            
+
         
         if parts.initial_position[0] is 'RIGHT':
             diff = parts.initial_position[1]['y'] - parts.r_hand['y'] 
-            if diff < 0 :
+            if diff == parts.initial_position[1]['y']:
+                path_flag = 0
+
+            elif diff < 0 :
                 path_flag = 2 
 
             elif diff > 0:
                 path_flag = 1 
-        
+
+            else:
+                path_flag = 0
+
         parts.addCounter()
         
     else:
@@ -111,19 +125,31 @@ def get_command_3_4_5_6(parts, command):
             #기준 손의 값이 변화하는 것을 확인해야함
             if parts.initial_position[0] is 'LEFT':
                 diff = parts.moved_position[1]['y'] - parts.l_hand['y'] 
-                if diff < 0 :
+                if diff == parts.initial_position[1]['y']:
+                    path_flag = 0
+
+                elif diff < 0 :
                     path_flag = 2 
 
                 elif diff > 0:
                     path_flag = 1
+                
+                else:
+                    path_flag = 0
             
             if parts.initial_position[0] is 'RIGHT':
                 diff = parts.moved_position[1]['y'] - parts.r_hand['y'] 
-                if diff < 0 :
+                if diff == parts.initial_position[1]['y']:
+                    path_flag = 0
+                    
+                elif diff < 0 :
                     path_flag = 2
 
                 elif diff > 0:
                     path_flag = 1
+                    
+                else:
+                    path_flag = 0
 
         else:
             if parts.initial_position[0] is 'LEFT':
@@ -156,6 +182,7 @@ def get_command_3_4_5_6(parts, command):
             elif parts.initial_position[0] is 'RIGHT':
                 parts.moved_position[1].update(parts.r_hand)
             command = 3
+
     # 이외에는 대기
 
     elif path_flag is 3:
