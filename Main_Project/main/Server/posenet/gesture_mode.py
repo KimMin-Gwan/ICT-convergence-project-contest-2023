@@ -7,7 +7,6 @@ from posenet.parts import Parts
 
 
 # 값이 전체적으로 증가하는지 감소하는지 구분하는 함수
-##
 def trend(x):
     sumDiff = np.sum(x)
 
@@ -77,7 +76,6 @@ def get_command_3_4_5_6(parts, command):
 
     # 방향 플래그
     path_flag = 0 # 0 : nothing 1 : 상승, 2 : 하강, 3 : 종료
-
     if parts.counter == 0:
     
         parts.get_other_hand(parts.initial_position[0])
@@ -177,6 +175,7 @@ def get_command_3_4_5_6(parts, command):
     elif path_flag is 2: 
         if abs(diff) < parts.eye_dist:
             command = 7
+            twohand_flag = 1
         if abs(diff) >= parts.eye_dist:
             if parts.initial_position[0] is 'LEFT':
                 parts.moved_position[1].update(parts.l_hand)
@@ -188,13 +187,13 @@ def get_command_3_4_5_6(parts, command):
 
     elif path_flag is 3:
         command = 5
+        
 
     else:
         command = 0
 
     return command, parts
 
-    
 
 
 # command 인덱스 
@@ -312,7 +311,9 @@ def figure_out_command(
     # 3, 4번은 연속 동작이므로 리턴 동작이 필요없음
     # 단 3, 4번 커멘드가 끝날 때 7번으로 변경해줘야함
     if command is not 0 and command is not 3 and command is not 4:
-        if parts.check_return() is False:
+        #투 핸드 모드이면 7을 리턴하지 않고 계속 작동
+        
+        if parts.check_return() is False and parts.two_hand is False: #여기 'and parts.two_hand is False' 추가함 (원핸드 모드일때)
             command = 7
             return display_image, command, parts
 
