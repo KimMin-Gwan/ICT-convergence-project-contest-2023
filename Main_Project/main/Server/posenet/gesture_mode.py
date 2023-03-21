@@ -7,6 +7,7 @@ from posenet.parts import Parts
 
 
 # 값이 전체적으로 증가하는지 감소하는지 구분하는 함수
+##
 def trend(x):
     sumDiff = np.sum(x)
 
