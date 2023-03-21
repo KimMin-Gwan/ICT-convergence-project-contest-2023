@@ -118,14 +118,14 @@ def get_command_3_4_5_6(parts, command):
     else:
     
         # 반대손이 움직이는 지 확인
-        #parts.other_hand_check()
+        parts.other_hand_check()
         
         #반대손이 고정되어 있다면
         if parts.dist < 20:
             #기준 손의 값이 변화하는 것을 확인해야함
             if parts.initial_position[0] is 'LEFT':
                 diff = parts.moved_position[1]['y'] - parts.l_hand['y'] 
-                if diff == parts.initial_position[1]['y']:
+                if diff == parts.moved_position[1]['y']:
                     path_flag = 0
 
                 elif diff < 0 :
@@ -139,7 +139,7 @@ def get_command_3_4_5_6(parts, command):
             
             if parts.initial_position[0] is 'RIGHT':
                 diff = parts.moved_position[1]['y'] - parts.r_hand['y'] 
-                if diff == parts.initial_position[1]['y']:
+                if diff == parts.moved_position[1]['y']:
                     path_flag = 0
                     
                 elif diff < 0 :
