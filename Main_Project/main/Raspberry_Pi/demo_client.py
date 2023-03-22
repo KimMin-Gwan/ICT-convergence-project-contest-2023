@@ -27,7 +27,7 @@ def main():
         server.send(sock, cam, encode_param)
 
         # 서버에서 커멘드의 값 받아오기(문자열 형태)
-        cmd = server.get()
+        cmd = server.get(sock)
         command = server.num_command(cmd)
 
         if command == None:
