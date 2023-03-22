@@ -25,20 +25,26 @@ def get_command_1_2(parts, command):
     # 5번 움직이는걸 측정하는 척도 parts.count
     # 다확인하고 나면 count 초기화 시켜줄것
     print('im in one hand mode')
+
+    #print('Count : ', parts.counter)
+    #print('inintal_ pos : ', parts.initial_position[1]['x'] , ' ', parts.initial_position[1]['y'])
+    #print('moved pos : ', parts.moved_position[1]['x'] ,' ', parts.moved_position[1]['y'])
+    #print('right hand  pos : ', parts.r_hand['x'] , ' ', parts.r_hand['y'])
+    
+
+
     # 초기값일 때
     if parts.counter == 0:
         #'왼손일 때'
         if parts.initial_position[0] is 'LEFT':
             diff = parts.l_hand['x'] - parts.initial_position[1]['x']
             parts.command_1_2_cal(diff)
-
         
         #'오른손일 때'
         elif parts.initial_position[0] is 'RIGHT':
 
             diff = parts.r_hand['x'] - parts.initial_position[1]['x']
             parts.command_1_2_cal(diff)
-        
     
     else:
         if parts.initial_position[0] is 'LEFT':
@@ -159,19 +165,8 @@ def get_command_3_4_5_6(parts, command):
                 path_flag = 3 
 
 
-    # 상승 이라면
-    if path_flag is 1: 
-        if abs(diff) < parts.eye_dist:
-            command = 7
-        elif abs(diff) >= parts.eye_dist:
-            if parts.initial_position[0] is 'LEFT':
-                parts.moved_position[1].update(parts.l_hand)
-            elif parts.initial_position[0] is 'RIGHT':
-                parts.moved_position[1].update(parts.r_hand)
-            command = 4
-
     #하강 이라면
-    elif path_flag is 2: 
+    if path_flag is 1: 
         if abs(diff) < parts.eye_dist:
             command = 7
         if abs(diff) >= parts.eye_dist:
@@ -180,6 +175,17 @@ def get_command_3_4_5_6(parts, command):
             elif parts.initial_position[0] is 'RIGHT':
                 parts.moved_position[1].update(parts.r_hand)
             command = 3
+
+    # 상승 이라면
+    elif path_flag is 2: 
+        if abs(diff) < parts.eye_dist:
+            command = 7
+        elif abs(diff) >= parts.eye_dist:
+            if parts.initial_position[0] is 'LEFT':
+                parts.moved_position[1].update(parts.l_hand)
+            elif parts.initial_position[0] is 'RIGHT':
+                parts.moved_position[1].update(parts.r_hand)
+            command = 4
 
     # 이외에는 대기
 
@@ -298,6 +304,8 @@ def figure_out_command(
         command = 8
         return display_image, command, parts
 
+    
+    print('right hand  pos : ', parts.r_hand['x'] , ' ', parts.r_hand['y'])
 
     #  초기 위치 지정이 안되있다면 초기값 지정
     if parts.init_flag is False:

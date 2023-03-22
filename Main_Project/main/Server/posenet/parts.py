@@ -19,7 +19,7 @@ class Parts():
         self.switch = False     # 함수 종료 조건
         self.init_flag = False  # 초기위치 정했는지 flag
         self.return_flag = False # 초기위치 복귀 확인 flag
-        self.initial_position = ['None', {'x': 0, 'y': 0}] # 초기 위치
+        self.initial_position = ['None', {'x': 1, 'y': 1}] # 초기 위치
         self.moved_position = ['None', {'x': 0, 'y': 0}] # 연산 중 임시 기록 위치
         self.other_hand_position = ['None', {'x' : 0, 'y' : 0}] # 기준 반대손
         self.counter = 0  # 변화하는 값 갯수 체크
@@ -121,12 +121,12 @@ class Parts():
                 self.two_hand = True
                 return self.two_hand
             else:
-                if self.other_hand_position[0] is 'None':
-                    self.two_hand = True 
-                    return self.two_hand 
-                else:
-                    self.two_hand = False 
-                    return self.two_hand 
+                #if self.other_hand_position[0] is 'None':
+                self.two_hand = False 
+                return self.two_hand 
+                # else:
+                #     self.two_hand = False 
+                #     return self.two_hand 
         else:
             return self.two_hand
 
