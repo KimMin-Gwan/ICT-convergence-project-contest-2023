@@ -58,4 +58,27 @@ def get(sock):
     print(data)
 
     return data
+
+def num_command(cmd):
+    if cmd == "nothing":
+        command = 0
+    elif cmd == "next":
+        command = 1
+    elif cmd == "previous":
+        command = 2
+    elif cmd == "up":
+        command = 3
+    elif cmd == "down":
+        command = 4
+    elif cmd == "shutdown":
+        command = 5
+    elif cmd == "turn on":
+        command = 6
+    elif cmd == "others":
+        command = 7
+    elif cmd == "done":
+        command = 8
+    else:
+        command = None
+    return command
     

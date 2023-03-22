@@ -27,9 +27,10 @@ def main():
         server.send(sock, cam, encode_param)
 
         # 서버에서 커멘드의 값 받아오기(문자열 형태)
-        command = server.get()
+        cmd = server.get()
+        commnad = server.num_command(cmd)
 
-        if command == 'command not detected':
+        if command == None:
             # 커멘드를 인식하지 못한다는 의미로 빨간색 LED 켜기
             GPIO.output(RED_LED, True)
             # 반복문 중단하기 
