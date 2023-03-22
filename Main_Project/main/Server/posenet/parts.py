@@ -97,12 +97,12 @@ class Parts():
             self.initial_position[1] = {'x': 0, 'y': 0}
             self.init_flag = False
 
-        if self.l_hand['y'] > self.nose:
+        if self.l_hand['y'] < self.nose:
             self.initial_position[0] = 'LEFT'
             self.initial_position[1] = {'x': self.l_hand['x'], 'y': self.l_hand['y']}
             self.init_flag = True
         
-        elif self.r_hand['y'] > self.nose:
+        elif self.r_hand['y'] < self.nose:
             self.initial_position[0] = 'RIGHT'
             self.initial_position[1] = {'x': self.r_hand['x'], 'y': self.r_hand['y']}
             self.init_flag = True
@@ -121,8 +121,12 @@ class Parts():
                 self.two_hand = True
                 return self.two_hand
             else:
-                self.two_hand = False 
-                return self.two_hand 
+                if self.other_hand_position[0] is 'None':
+                    self.two_hand = True 
+                    return self.two_hand 
+                else:
+                    self.two_hand = False 
+                    return self.two_hand 
         else:
             return self.two_hand
 
@@ -164,6 +168,7 @@ class Parts():
     # 카운터 리셋
     def resetCounter(self):
         self.counter = 0
+        self.other_hand_position = ['None', {'x' : 0, 'y' : 0}] # 기준 반대손
         self.diff = np.array([])
 
 
