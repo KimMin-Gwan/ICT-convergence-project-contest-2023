@@ -39,7 +39,6 @@ def get_command_1_2(parts, command):
             diff = parts.r_hand['x'] - parts.initial_position[1]['x']
             parts.command_1_2_cal(diff)
         
-        parts.two_hand = False
     
     else:
         if parts.initial_position[0] is 'LEFT':
@@ -175,7 +174,6 @@ def get_command_3_4_5_6(parts, command):
     elif path_flag is 2: 
         if abs(diff) < parts.eye_dist:
             command = 7
-            twohand_flag = 1
         if abs(diff) >= parts.eye_dist:
             if parts.initial_position[0] is 'LEFT':
                 parts.moved_position[1].update(parts.l_hand)
