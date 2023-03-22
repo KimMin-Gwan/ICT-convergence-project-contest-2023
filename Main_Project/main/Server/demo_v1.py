@@ -68,6 +68,8 @@ def main():
                 img_overlay, gesture, count, now_dist = hand.check_trigger(
                     frame, hands_data, count, now_dist
                     )
+            
+            
 
             if trigger is False and gesture is False:
                 command = 0
