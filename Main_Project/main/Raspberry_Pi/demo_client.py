@@ -28,7 +28,7 @@ def main():
 
         # 서버에서 커멘드의 값 받아오기(문자열 형태)
         cmd = server.get()
-        commnad = server.num_command(cmd)
+        command = server.num_command(cmd)
 
         if command == None:
             # 커멘드를 인식하지 못한다는 의미로 빨간색 LED 켜기
