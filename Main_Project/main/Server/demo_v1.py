@@ -52,6 +52,7 @@ def main():
         while True:
             # frame 받아오기
             frame = server.get_stream(conn)
+            if frame is None: continue
 
                 # 원래 webcam_demo의 메인 반복문
                 #posnet_flag, trigger_y, hand_y = posenet.detection(img, model_cfg, model_outputs, sess, trigger)

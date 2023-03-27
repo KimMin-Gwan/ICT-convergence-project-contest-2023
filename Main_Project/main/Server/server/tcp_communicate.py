@@ -37,6 +37,7 @@ def server_init():
 def get_stream(conn):
     # client에서 받은 stringData의 크기 (==(str(len(stringData))).encode().ljust(16))
     length = recvall(conn, 16)
+    if length is None : return None #client에서 받은 데이터가 없으면 none을 보냄
     stringData = recvall(conn, int(length))
     data = np.fromstring(stringData, dtype = 'uint8')
     
